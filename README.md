@@ -1,54 +1,99 @@
-## Task:
-
-### Implement an API endpoint for the scenario below:
-
-- Imagine that a frontend design has been drafted to present data that we already have in our DB: `Posts` and `Comments`. 
-
-  * The design is an infinite scrolling list of `Posts`.
-
-- The list of `Posts` should be ordered by timestamp, latest first. 
-
-- Some `Posts` will have `Comments`. 
-
-- For each `Post` in this list, we want to show up to 3 `Comments` for that `Post` (`Comments` also sorted latest first).
-
-  * For each `Post`: we will need to display a `Post`'s text, timestamp, `Comment` count, and author's username.
-
-  * For `Comments`: we will need to display a `Comment`'s text, timestamp, and author's username.
-
-- Include basic documentation on how to use your new endpoint.
-
-### Follow-up Q: 
-- Instead of sorting comments by timestamp, how would you fetch 3 random comments associated to a given post?
-  * You can leave your answer anywhere in the project codebase that you deem appropriate.
-
----
-
-## To get started:
-
-1. Set up a virtualenv for this project (The author used Python 3.10.14)
-
-- Example: `pyenv local myvirtualenv` (or however you set up Python virtualenvs)
-
-2. Install dependencies: `pip install -r requirements.txt`
-
-3. Migrate database `python manage.py migrate`
-
-4. Now head to apps/demo/views.py and complete the assignment!
-
-- Run tests via `python manage.py test apps` or
-- check server after running via `python manage.py runserver`
-
 # Movie Database Project
 
-## Backend (Django REST API)
-- Posts API with infinite scrolling
-- Pagination support
-- Up to 3 latest comments per post
+Full-stack project with Django REST API backend and Vue.js frontend.
 
-### Setup:
+## Backend - Django REST API
+
+Django REST Framework API for posts with infinite scrolling functionality.
+
+### Features
+- Posts ordered by timestamp (latest first)
+- Up to 3 latest comments per post
+- Pagination support for infinite scrolling
+- Optimized queries to avoid N+1 problems
+
+### Setup
 ```bash
 cd backend_repo
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
+```
+
+### API Endpoint
+```
+GET /api/posts/
+GET /api/posts/?page=2
+GET /api/posts/?page_size=20
+```
+
+### Response Format
+```json
+{
+    "count": 5,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": "uuid",
+            "text": "Post content",
+            "timestamp": "2025-07-31T10:07:12.341908Z",
+            "username": "testuser",
+            "comment_count": 4,
+            "latest_comments": [
+                {
+                    "text": "Comment text",
+                    "timestamp": "2025-07-31T10:07:12.401714Z",
+                    "username": "testuser"
+                }
+            ]
+        }
+    ]
+}
+```
+
+## Frontend - Vue.js Movie Page
+
+Recreation of TMDB movie page layout using Vue.js and OMDB API.
+
+### Features
+- Responsive design (mobile, tablet, desktop)
+- Real movie data from OMDB API
+- Interactive rating system
+- Quick action buttons
+
+### Setup
+```bash
+cd frontend/movie-app
+open index.html  # Or double-click the file
+```
+
+### Improvements Made
+1. **Enhanced Rating Modal** - Interactive 10-star rating system with hover effects
+2. **Quick Action Buttons** - Floating share and scroll-to-top buttons
+
+### Tech Stack
+- Vue.js 3 (via CDN)
+- Vanilla CSS with modern design patterns
+- OMDB API integration
+
+## Project Structure
+```
+├── backend_repo/           # Django REST API
+│   ├── apps/demo/         
+│   │   ├── models.py      # Post and Comment models
+│   │   ├── serializers.py # API serializers
+│   │   ├── views.py       # API views
+│   │   └── tests.py       # API tests
+│   └── manage.py
+├── frontend/
+│   └── movie-app/
+│       └── index.html     # Vue.js movie page
+└── README.md
+```
+
+## Demo
+- Backend API: http://127.0.0.1:8000/api/posts/
+- Frontend: Open frontend/movie-app/index.html in browser
