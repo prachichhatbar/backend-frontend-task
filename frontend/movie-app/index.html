@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardians of the Galaxy Vol. 2 - TMDB Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #032541;
+            color: white;
+            line-height: 1.4;
+        }
+
+        .header {
+            background-color: #0d253f;
+            padding: 16px 0;
+            border-bottom: 1px solid #405266;
+        }
+
+        .header-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #01b4e4;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            color: #01b4e4;
+        }
+
+        .search-login {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .movie-hero {
+            background: linear-gradient(to right, rgba(3, 37, 65, 0.8) 150px, rgba(3, 37, 65, 0.84) 100%), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23405266" width="100" height="100"/></svg>');
+            background-size: cover;
+            padding: 30px 0;
+        }
+
+        .hero-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .poster-container {
+            flex-shrink: 0;
+        }
+
+        .movie-poster {
+            width: 300px;
+            height: 450px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .movie-details {
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .movie-title {
+            font-size: 35px;
+            font-weight: 700;
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        .movie-year {
+            font-size: 35px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .movie-facts {
+            margin: 8px 0 20px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .certification {
+            border: 1px solid rgba(255,255,255,0.6);
+            padding: 1px 4px;
+            font-size: 12px;
+        }
+
+        .genres {
+            margin: 20px 0;
+        }
+
+        .genre-list {
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .user-score-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .score-circle {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #081c22;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #21d07a;
+            font-weight: 700;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .score-circle::after {
+            content: '%';
+            font-size: 8px;
+            position: absolute;
+            right: 8px;
+            top: 12px;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .action-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .play-trailer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 8px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .tagline {
+            font-size: 18px;
+            font-style: italic;
+            opacity: 0.8;
+            margin: 20px 0 10px 0;
+        }
+
+        .overview-section h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .overview-text {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .crew-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .crew-member h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .crew-member p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+
+            .movie-poster {
+                width: 250px;
+                height: 375px;
+                margin: 0 auto;
+            }
+
+            .movie-title {
+                font-size: 28px;
+                text-align: center;
+            }
+
+            .movie-facts {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .user-score-section {
+                justify-content: center;
+            }
+
+            .actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .crew-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .movie-poster {
+                width: 200px;
+                height: 300px;
+            }
+
+            .movie-title {
+                font-size: 24px;
+            }
+
+            .hero-content {
+                padding: 0 10px;
+            }
+
+            .crew-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Rating Modal - My Improvement #1 */
+        .rating-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .rating-content {
+            background: #0d253f;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .star {
+            font-size: 30px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+        }
+
+        /* Quick Actions Improvement #2 */
+        .quick-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .quick-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #01b4e4;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .quick-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left: 4px solid #01b4e4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">TMDB</div>
+                <nav class="nav">
+                    <a href="#">Movies</a>
+                    <a href="#">TV Shows</a>
+                    <a href="#">People</a>
+                    <a href="#">More</a>
+                </nav>
+                <div class="search-login">
+                    <span>🔍</span>
+                    <span>EN</span>
+                    <span>Login</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Loading State -->
+        <div v-if="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Movie Hero Section -->
+        <div v-else class="movie-hero">
+            <div class="hero-content">
+                <div class="poster-container">
+                    <img :src="movie.Poster" :alt="movie.Title" class="movie-poster">
+                </div>
+                
+                <div class="movie-details">
+                    <h1 class="movie-title">
+                        {{ movie.Title }} 
+                        <span class="movie-year">({{ movie.Year }})</span>
+                    </h1>
+                    
+                    <div class="movie-facts">
+                        <span class="certification">{{ movie.Rated }}</span>
+                        <span>{{ movie.Released }}</span>
+                        <span>•</span>
+                        <span>{{ movie.Runtime }}</span>
+                    </div>
+                    
+                    <div class="genres">
+                        <div class="genre-list">{{ movie.Genre }}</div>
+                    </div>
+                    
+                    <div class="user-score-section">
+                        <div class="score-circle">
+                            {{ Math.round(movie.imdbRating * 10) }}
+                        </div>
+                        <div>
+                            <strong>User<br>Score</strong>
+                        </div>
+                        
+                        <div class="actions">
+                            <div class="action-item" @click="toggleWatchlist">
+                                📋 {{ isInWatchlist ? 'Remove from' : 'Add to' }} Watchlist
+                            </div>
+                            <div class="action-item" @click="toggleFavorite">
+                                {{ isFavorite ? '❤️' : '🤍' }} Favorite
+                            </div>
+                            <div class="action-item" @click="openRatingModal">
+                                ⭐ Rate
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="play-trailer" @click="playTrailer">
+                        <div class="play-icon"></div>
+                        Play Trailer
+                    </div>
+                    
+                    <div class="tagline" v-if="movie.Plot">
+                        {{ getTagline(movie.Plot) }}
+                    </div>
+                    
+                    <div class="overview-section">
+                        <h3>Overview</h3>
+                        <p class="overview-text">{{ movie.Plot }}</p>
+                    </div>
+                    
+                    <div class="crew-info">
+                        <div class="crew-member">
+                            <h4>{{ getDirector(movie.Director) }}</h4>
+                            <p>Director</p>
+                        </div>
+                        <div class="crew-member" v-for="writer in getWriters(movie.Writer)" :key="writer">
+                            <h4>{{ writer }}</h4>
+                            <p>Writer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Rating Modal - Improvement #1 -->
+        <div class="rating-modal" ref="ratingModal">
+            <div class="rating-content">
+                <h3>Rate "{{ movie.Title }}"</h3>
+                <div class="star-rating">
+                    <span 
+                        v-for="n in 10" 
+                        :key="n"
+                        class="star"
+                        :class="{ active: n <= userRating }"
+                        @click="setRating(n)"
+                        @mouseover="hoverRating(n)"
+                        @mouseleave="hoverRating(0)">
+                        ⭐
+                    </span>
+                </div>
+                <p v-if="userRating">Your rating: {{ userRating }}/10</p>
+                <div style="margin-top: 20px;">
+                    <button @click="submitRating" style="margin-right: 10px; padding: 8px 16px; background: #01b4e4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Submit
+                    </button>
+                    <button @click="closeRatingModal" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Float - Improvement #2 -->
+        <div class="quick-actions">
+            <button class="quick-btn" @click="shareMovie" title="Share">📤</button>
+            <button class="quick-btn" @click="scrollToTop" title="Back to top">⬆️</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    movie: {},
+                    loading: true,
+                    isFavorite: false,
+                    isInWatchlist: false,
+                    userRating: 0,
+                    hoverRatingValue: 0
+                }
+            },
+            methods: {
+                async fetchMovieData() {
+                    try {
+                        this.loading = true
+                        const response = await fetch('http://www.omdbapi.com/?i=tt3896198&apikey=d2132124')
+                        this.movie = await response.json()
+                    } catch (error) {
+                        console.error('Error fetching movie data:', error)
+                    } finally {
+                        this.loading = false
+                    }
+                },
+                
+                getTagline(plot) {
+                    // Extract first sentence as tagline
+                    return plot.split('.')[0] + '.'
+                },
+                
+                getDirector(director) {
+                    return director.split(',')[0]
+                },
+                
+                getWriters(writers) {
+                    return writers.split(',').slice(0, 2).map(w => w.trim())
+                },
+                
+                playTrailer() {
+                    alert('🎬 Playing trailer... (This would open a video player)')
+                },
+                
+                toggleFavorite() {
+                    this.isFavorite = !this.isFavorite
+                    const message = this.isFavorite ? 'Added to favorites! ❤️' : 'Removed from favorites'
+                    this.showNotification(message)
+                },
+                
+                toggleWatchlist() {
+                    this.isInWatchlist = !this.isInWatchlist
+                    const message = this.isInWatchlist ? 'Added to watchlist! 📋' : 'Removed from watchlist'
+                    this.showNotification(message)
+                },
+                
+                // Improvement #1: Enhanced Rating System
+                openRatingModal() {
+                    this.$refs.ratingModal.style.display = 'flex'
+                },
+                
+                closeRatingModal() {
+                    this.$refs.ratingModal.style.display = 'none'
+                    this.hoverRatingValue = 0
+                },
+                
+                setRating(rating) {
+                    this.userRating = rating
+                },
+                
+                hoverRating(rating) {
+                    this.hoverRatingValue = rating
+                },
+                
+                submitRating() {
+                    if (this.userRating > 0) {
+                        this.showNotification(`Thanks for rating! You gave it ${this.userRating}/10 ⭐`)
+                        this.closeRatingModal()
+                    }
+                },
+                
+                // Improvement #2: Quick Actions
+                shareMovie() {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: this.movie.Title,
+                            text: `Check out ${this.movie.Title} (${this.movie.Year})`,
+                            url: window.location.href
+                        })
+                    } else {
+                        // Fallback: copy to clipboard
+                        navigator.clipboard.writeText(window.location.href)
+                        this.showNotification('Link copied to clipboard! 📋')
+                    }
+                },
+                
+                scrollToTop() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                },
+                
+                showNotification(message) {
+                    // Simple notification system
+                    const notification = document.createElement('div')
+                    notification.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; background: #01b4e4;
+                        color: white; padding: 12px 20px; border-radius: 6px; z-index: 1001;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.3); animation: slideIn 0.3s ease;
+                    `
+                    notification.textContent = message
+                    document.body.appendChild(notification)
+                    
+                    setTimeout(() => {
+                        notification.remove()
+                    }, 3000)
+                }
+            },
+            
+            mounted() {
+                this.fetchMovieData()
+                
+                // Add CSS animation
+                const style = document.createElement('style')
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `
+                document.head.appendChild(style)
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
